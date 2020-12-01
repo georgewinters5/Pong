@@ -1,4 +1,5 @@
 import Igis
+import Scenes
 
 /*
  This main code is responsible for starting Igis and initializing

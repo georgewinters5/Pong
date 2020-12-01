@@ -6,44 +6,56 @@ import Scenes
  */
 
 class Paddle : RenderableEntity, KeyDownHandler {
-    enum Position {
-        case left
-        case right
-    }
-    
     // Settings
-    let leftPaddleColor = Color(red:255, green:50, blue:50)
-    let rightPaddleColor = Color(red:50, green:50, blue:255)
-    let paddleSize = Size(width:10, height:75)
-    let paddleOffset = 20
-    let movementInterval = 5
+    static let paddleSize = Size(width:16, height:120)
+    static let paddleOffset = 24
+    static let paddleSpeed = 8
+
+    static let leftPaddleColor = Color(red:255, green:50, blue:50)
+    static let rightPaddleColor = Color(red:50, green:50, blue:255)
+
+    static let leftPaddleUpKey = "w"
+    static let leftPaddleDownKey = "s"
+    static let rightPaddleUpKey = "ArrowUp"
+    static let rightPaddleDownKey = "ArrowDown"
     
     // Constants
-    let moveUpKey : String
-    let moveDownKey : String
     let position : Position
+    let upKey : String
+    let downKey : String
+
     let paddleFillStyle : FillStyle
-    var rectangle : Rectangle
+    let rectangle : Rectangle
     var canvasBottom = 0
 
-    init(position:Position, moveUpKey:String, moveDownKey:String) {
-        self.moveUpKey = moveUpKey
-        self.moveDownKey = moveDownKey
+    init(position:Position) {
         self.position = position
-        self.paddleFillStyle = FillStyle(color:position == .left ? leftPaddleColor : rightPaddleColor)
+
+        switch position {
+        case .left:
+            upKey = Paddle.leftPaddleUpKey
+            downKey = Paddle.leftPaddleDownKey
+            paddleFillStyle = FillStyle(color:Paddle.leftPaddleColor)
+        case .right:
+            upKey = Paddle.rightPaddleUpKey
+            downKey = Paddle.rightPaddleDownKey
+            paddleFillStyle = FillStyle(color:Paddle.rightPaddleColor)
+        }
+        
         rectangle = Rectangle(rect:Rect.zero, fillMode:.fill)
     }
 
     override func setup(canvasSize:Size, canvas:Canvas) {
         var topLeft = Point.zero
+        
         switch position {
         case .left:
-            topLeft.x = paddleOffset
+            topLeft.x = Paddle.paddleOffset
         case .right:
-            topLeft.x = canvasSize.width - paddleOffset - paddleSize.width
+            topLeft.x = canvasSize.width - Paddle.paddleOffset - Paddle.paddleSize.width
         }
         
-        rectangle.rect = Rect(topLeft:topLeft, size:paddleSize)
+        rectangle.rect = Rect(topLeft:topLeft, size:Paddle.paddleSize)
         canvasBottom = canvasSize.height
         
         dispatcher.registerKeyDownHandler(handler:self)
@@ -69,10 +81,10 @@ class Paddle : RenderableEntity, KeyDownHandler {
     }
 
     func onKeyDown(key:String, code:String, ctrlKey:Bool, shiftKey:Bool, altKey:Bool, metaKey:Bool) {
-        if key == moveUpKey {
-            move(by:-movementInterval)
-        } else if key == moveDownKey {
-            move(by:movementInterval)
+        if key == upKey {
+            move(by:-Paddle.paddleSpeed)
+        } else if key == downKey {
+            move(by:Paddle.paddleSpeed)
         }
     }
 }

@@ -1,3 +1,4 @@
+import Igis
 import Scenes
 
 /*
@@ -6,13 +7,15 @@ import Scenes
  */
 
 class ForegroundLayer : Layer {
-    let scoreboard = Scoreboard()
+    let leftScoreboard = Scoreboard(position:.left)
+    let rightScoreboard = Scoreboard(position:.right)
     
     init() {
         // Using a meaningful name can be helpful for debugging
         super.init(name:"Foreground")
         
         // We insert our RenderableEntities in the constructor
-        insert(entity:scoreboard, at:.front)
+        insert(entity:leftScoreboard, at:.front)
+        insert(entity:rightScoreboard, at:.front)
     }
 }

@@ -1,57 +1,56 @@
 import Igis
 import Scenes
 
-class Ball :  RenderableEntity{
-    var ellipse : Ellipse
-    var velocityX : Int
-    var velocityY : Int
-    init(size:Int) {
-        ellipse = Ellipse(center:Point(x:0, y:0), radiusX:size, radiusY:size, fillMode:.fillAndStroke)
-        velocityX = 0
-        velocityY = 0
+/*
+ This class is responsible for rendering the ball.
+ */
+
+class Ball :  RenderableEntity {
+    // Settings
+    static let ballRadius = 20
+    static let speedX = 10
+    static let speedY = 6
+
+    static let ballColor = Color(red:255, green:255, blue:255)
+    
+    // Constants
+    let ballFillStyle = FillStyle(color:ballColor)
+    let ellipse : Ellipse
+    
+    var velocityX = speedX
+    var velocityY = speedY
+    
+    init() {
+        ellipse = Ellipse(center:Point.zero, radiusX:Ball.ballRadius, radiusY:Ball.ballRadius, fillMode:.fill)
     }
 
-    func paint(canvas:Canvas) {
-        canvas.render(FillStyle(color:Color(.white)), ellipse)
-    }
-
-    func move(to:Point) {
-        ellipse.center = to
-    }
-    func changeVelocity(velocityX:Int, velocityY:Int) {
-        self.velocityX = velocityX
-        self.velocityY = velocityY
-    }
     override func calculate(canvasSize:Size) {
-        // First, move to the new position
         ellipse.center += Point(x:velocityX, y:velocityY)
 
-        // Form a bounding rectangle around the canvas
-        let canvasBoundingRect = Rect(topLeft:Point(x:0, y:0), size:canvasSize)
+        let canvasBoundingRect = Rect(size:canvasSize)
+        let ballBoundingRect = Rect(topLeft:Point(x:ellipse.center.x - ellipse.radiusX, y:ellipse.center.y - ellipse.radiusY),
+                                    size:Size(width:ellipse.radiusX * 2, height:ellipse.radiusY * 2))
 
-        // Form a bounding rect around the ball (ellipse)
-        let ballBoundingRect = Rect(topLeft:Point(x:ellipse.center.x-ellipse.radiusX, y:ellipse.center.y-ellipse.radiusY),
-                                    size:Size(width:ellipse.radiusX*2, height:ellipse.radiusY*2))
+        let hitResults = canvasBoundingRect.containment(target:ballBoundingRect)
 
-        // Determine if we've moved outside of the canvas boundary rect
-        let tooFarLeft = ballBoundingRect.topLeft.x < canvasBoundingRect.topLeft.x
-        let tooFarRight = ballBoundingRect.topLeft.x + ballBoundingRect.size.width > canvasBoundingRect.topLeft.x + canvasBoundingRect.size.width
-
-        let tooFarUp = ballBoundingRect.topLeft.y < canvasBoundingRect.topLeft.y
-        let tooFarDown = ballBoundingRect.topLeft.y + ballBoundingRect.size.height > canvasBoundingRect.topLeft.y + canvasBoundingRect.size.height 
-
-        // If we're too far to the left or right, we bounce the x velocity
-        if tooFarLeft || tooFarRight {
-            velocityX = -velocityX
+        for result in hitResults {
+            switch result {
+            case .overlapsTop:
+                velocityY = Ball.speedY
+            case .overlapsBottom:
+                velocityY = -Ball.speedY
+            case .overlapsLeft:
+                velocityX = Ball.speedX
+            case .overlapsRight:
+                velocityX = -Ball.speedX
+            default:
+                break
+            }
         }
-        // If we're too far to the top or bottom, we bounce the y velocity
-        if tooFarUp || tooFarDown {
-            velocityY = -velocityY
-        }
-        
     }
 
     override func render(canvas:Canvas) {
-        paint(canvas:canvas)
+        canvas.render(ballFillStyle)
+        canvas.render(ellipse)
     }
 }

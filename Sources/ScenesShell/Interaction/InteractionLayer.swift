@@ -7,9 +7,9 @@ import Scenes
  */
 
 class InteractionLayer : Layer {
-    let ball = Ball(size:15)
-    let leftPaddle = Paddle(position:.left, moveUpKey:"w", moveDownKey:"s")
-    let rightPaddle = Paddle(position:.right, moveUpKey:"ArrowUp", moveDownKey:"ArrowDown")
+    let ball = Ball()
+    let leftPaddle = Paddle(position:.left)
+    let rightPaddle = Paddle(position:.right)
 
     init() {
         // Using a meaningful name can be helpful for debugging
