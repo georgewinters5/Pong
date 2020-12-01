@@ -24,6 +24,10 @@ class Ball :  RenderableEntity {
         ellipse = Ellipse(center:Point.zero, radiusX:Ball.ballRadius, radiusY:Ball.ballRadius, fillMode:.fill)
     }
 
+    override func setup(canvasSize:Size, canvas:Canvas) {
+        ellipse.center = canvasSize.center
+    }
+
     override func calculate(canvasSize:Size) {
         ellipse.center += Point(x:velocityX, y:velocityY)
 
