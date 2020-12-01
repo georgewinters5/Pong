@@ -12,12 +12,17 @@ class Paddle : RenderableEntity, KeyDownHandler, KeyUpHandler
 
     init(_ rect:Rect, _ controlKeys:[String], _ rate:Int)
     {
-        precondition(condition:controlKeys.count == 2)
-        rect = rect
-        controls = controlKey
-        rate = rate
+        precondition(controlKeys.count == 2)
+        self.rect = rect
+        controls = controlKeys
+        self.rate = rate
         
         super.init(name:"Paddle")
+    }
+
+    override func setup(canvasSize:Size, canvas:Canvas) {
+        dispatcher.registerKeyDownHandler(handler:self)
+        dispatcher.registerKeyUpHandler(handler:self)
     }
 
     override func render(canvas:Canvas)
@@ -30,12 +35,17 @@ class Paddle : RenderableEntity, KeyDownHandler, KeyUpHandler
         canvas.render(fillStyle, strokeStyle, rectangle)
     }
 
-    override func onKeyDown(key:String, code:String, ctrlKey:Bool, shiftKey:Bool, altKey:Bool, metaKey:Bool)
+    override func teardown() {
+        dispatcher.unregisterKeyDownHandler(handler:self)
+        dispatcher.unregisterKeyUpHandler(handler:self)
+    }
+
+    func onKeyDown(key:String, code:String, ctrlKey:Bool, shiftKey:Bool, altKey:Bool, metaKey:Bool)
     {
         isMovingUp = key == controls[0] ? true : isMovingUp
         isMovingDown = key == controls[1] ? true : isMovingDown
     }
-    override func onKeyUp(key:String, code:String, ctrlKey:Bool, shiftKey:Bool, altKey:Bool, metaKey:Bool)
+    func onKeyUp(key:String, code:String, ctrlKey:Bool, shiftKey:Bool, altKey:Bool, metaKey:Bool)
     {
         isMovingUp = key == controls[0] ? true : isMovingUp
         isMovingDown = key == controls[1] ? true : isMovingDown
