@@ -12,7 +12,7 @@ class Ball :  RenderableEntity{
     }
 
     func paint(canvas:Canvas) {
-        canvas.render(ellipse)
+        canvas.render(FillStyle(color:Color(.white)), ellipse)
     }
 
     func move(to:Point) {
@@ -49,5 +49,9 @@ class Ball :  RenderableEntity{
             velocityY = -velocityY
         }
         
+    }
+
+    override func render(canvas:Canvas) {
+        paint(canvas:canvas)
     }
 }

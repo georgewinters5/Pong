@@ -1,22 +1,17 @@
-import Scenes
 import Igis
+import Scenes
 
 /*
  This class is responsible for rendering the scoreboard.
  */
-
-
-//This is broken atm
 
 class Scoreboard : RenderableEntity {
 
     // We establish our variables first
     var leftScore : Int = 0
     var rightScore : Int = 0
-    var location = Point(x:100, y:100)
+    static var location = Point(x:100, y:100)
     var text = Text(location:location, text:"test", fillMode:.fill)
-    
-
     
     init() {
 
@@ -35,7 +30,5 @@ class Scoreboard : RenderableEntity {
 
     override func render(canvas:Canvas) {
         
-    }
-    
-    
+    }    
 }
