@@ -1,4 +1,5 @@
 import Scenes
+import Igis
 
 /*
  This class is responsible for the background Layer.
@@ -6,13 +7,16 @@ import Scenes
  */
 
 class BackgroundLayer : Layer {
-    let background = Background()
-    let scoreboard = Scoreboard()
+    let background : Background
+    let scoreboard : Scoreboard
     
-    init() {
+    init()
+    {
+        background = Background()
+        scoreboard = Scoreboard(location:Point(x:100, y:100))
+        
         // Using a meaningful name can be helpful for debugging
         super.init(name:"Background")
-        
         
         // We insert our RenderableEntities in the constructor
         insert(entity:background, at:.back)

@@ -6,12 +6,20 @@ import Scenes
  Internally, it maintains the RenderableEntities for this layer.
  */
 
-class InteractionLayer : Layer {
-    let ball = Ball(size:15)
-    let leftPaddle = Paddle(Rect(size:Size(width:25, height:75)), ["w", "s"], 10)
-    let rightPaddle = Paddle(Rect(size:Size(width:25, height:75)), ["w", "s"], 10)
-
-    init() {
+class InteractionLayer : Layer
+{
+    // This is where we create our objects that will be inside this layer
+    let ball : Ball
+    let leftPaddle : Paddle
+    let rightPaddle : Paddle
+    
+    init()
+    {
+        // This is where we define our objects
+        ball = Ball(size:15)
+        leftPaddle = Paddle(topLeft:Point(), size:Size(width:0, height:0))
+        rightPaddle = Paddle(topLeft:Point(), size:Size(width:0, height:0))
+        
         // Using a meaningful name can be helpful for debugging
         super.init(name:"Interaction")
         
