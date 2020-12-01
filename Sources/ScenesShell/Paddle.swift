@@ -3,15 +3,17 @@ import Scenes
 
 class Paddle : RenderableEntity, KeyDownHandler, KeyUpHandler
 {
-    let rect : Rect
-    let controls : [String]
-    let rate : Int
-
-    var isMovingUp : Bool = false
-    var isMovingDown : Bool = false
-
-    init(_ rect:Rect, _ controlKeys:[String], _ rate:Int)
+    var rectangle : Rectangle
+    
+    init(topLeft:Point, size:Size)
     {
+<<<<<<< HEAD
+        let rect = Rect(topLeft:topLeft, size:size)
+        rectangle = Rectangle(rect:rect, fillMode:.fillAndStroke)
+    }
+    
+    func paint(canvas:Canvas)
+=======
         precondition(controlKeys.count == 2)
         self.rect = rect
         controls = controlKeys
@@ -26,15 +28,18 @@ class Paddle : RenderableEntity, KeyDownHandler, KeyUpHandler
     }
 
     override func render(canvas:Canvas)
+>>>>>>> b7cd53a669c0235a54ea77615a920024908d73cd
     {
-        let fillStyle : FillStyle = FillStyle(color:Color(.white))
-        let strokeStyle : StrokeStyle = StrokeStyle(color:Color(.black))
-        
-        let rectangle = Rectangle(rect:rect, fillMode:.fillAndStroke)
-
-        canvas.render(fillStyle, strokeStyle, rectangle)
+        let strokeStyle = StrokeStyle(color:Color(.black))
+        let fillStyle = FillStyle(color:Color(.white))
+        let lineWidth = LineWidth(width:2)
+        canvas.paint(strokeStyle, fillStyle, lineWidth)
+        canvas.paint(rectangle)
     }
 
+<<<<<<< HEAD
+    func move(to:Point)
+=======
     override func teardown() {
         dispatcher.unregisterKeyDownHandler(handler:self)
         dispatcher.unregisterKeyUpHandler(handler:self)
@@ -46,8 +51,8 @@ class Paddle : RenderableEntity, KeyDownHandler, KeyUpHandler
         isMovingDown = key == controls[1] ? true : isMovingDown
     }
     func onKeyUp(key:String, code:String, ctrlKey:Bool, shiftKey:Bool, altKey:Bool, metaKey:Bool)
+>>>>>>> b7cd53a669c0235a54ea77615a920024908d73cd
     {
-        isMovingUp = key == controls[0] ? true : isMovingUp
-        isMovingDown = key == controls[1] ? true : isMovingDown
+        rectangle.rect.topLeft = to
     }
 }
