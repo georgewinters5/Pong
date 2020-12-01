@@ -24,7 +24,7 @@ class Ball :  RenderableEntity{
     }
     override func calculate(canvasSize:Size) {
         // First, move to the new position
-        ellipse.center.moveBy(offsetX:velocityX, offsetY:velocityY)
+        ellipse.center += Point(x:velocityX, y:velocityY)
 
         // Form a bounding rectangle around the canvas
         let canvasBoundingRect = Rect(topLeft:Point(x:0, y:0), size:canvasSize)
