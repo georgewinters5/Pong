@@ -43,10 +43,16 @@ class Ball :  RenderableEntity {
                 velocityY = Ball.speedY
             case .overlapsBottom:
                 velocityY = -Ball.speedY
-            case .overlapsLeft:
+            case .overlapsLeft, .overlapsRight:
                 velocityX = Ball.speedX
-            case .overlapsRight:
-                velocityX = -Ball.speedX
+                velocityY = Ball.speedY
+                ellipse.center = canvasSize.center
+                if let scene = scene as? MainScene {
+                    let position = (result == .overlapsLeft)
+                      ? Position.right
+                      : Position.left
+                    scene.addPoint(side:position)
+                }
             default:
                 break
             }

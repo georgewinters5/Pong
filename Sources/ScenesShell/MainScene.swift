@@ -30,4 +30,12 @@ class MainScene : Scene {
         insert(layer:interactionLayer, at:.inFrontOf(object:backgroundLayer))
         insert(layer:foregroundLayer, at:.front)
     }
+
+    func addPoint(side:Position) {
+        foregroundLayer.addPoint(side:side)
+    }
+
+    func gameOver(winner:Position) {
+        
+    }
 }

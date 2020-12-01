@@ -20,4 +20,17 @@ class InteractionLayer : Layer {
         insert(entity:leftPaddle, at:.front)
         insert(entity:rightPaddle, at:.front)
     }
+
+    override func postCalculate(canvas: Canvas) {
+        let ballBoundingBox = Rect(topLeft:Point(x:ball.ellipse.center.x - ball.ellipse.radiusX, y:ball.ellipse.center.y - ball.ellipse.radiusY),
+                                   size:Size(width:ball.ellipse.radiusX * 2, height:ball.ellipse.radiusY * 2))
+        let leftPaddleHitTest = leftPaddle.rectangle.rect.containment(target:ballBoundingBox).contains(.contact)
+        let rightPaddleHitTest = rightPaddle.rectangle.rect.containment(target:ballBoundingBox).contains(.contact)
+
+        if leftPaddleHitTest {
+            ball.velocityX = Ball.speedX
+        } else if rightPaddleHitTest {
+            ball.velocityX = -Ball.speedX
+        }
+    }
 }

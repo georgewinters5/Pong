@@ -18,4 +18,13 @@ class ForegroundLayer : Layer {
         insert(entity:leftScoreboard, at:.front)
         insert(entity:rightScoreboard, at:.front)
     }
+
+    func addPoint(side:Position) {
+        switch side {
+        case .left:
+            leftScoreboard.addPoint()
+        case .right:
+            rightScoreboard.addPoint()
+        }
+    }
 }
