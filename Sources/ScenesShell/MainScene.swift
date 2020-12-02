@@ -43,6 +43,6 @@ class MainScene : Scene {
     // the gameOver panel and provide the player with options to
     // start a new game.
     func gameOver(winner:Position) {
-        
+        foregroundLayer.showGameOverScreen(winner: winner)
     }
 }

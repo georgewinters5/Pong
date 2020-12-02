@@ -21,11 +21,11 @@ class InteractionLayer : Layer {
         insert(entity:rightPaddle, at:.front)
     }
 
+    // Calculate if the ball comes into contact with a paddle, and
+    // handle it accordingly.
     override func postCalculate(canvas: Canvas) {
-        let ballBoundingBox = Rect(topLeft:Point(x:ball.ellipse.center.x - ball.ellipse.radiusX, y:ball.ellipse.center.y - ball.ellipse.radiusY),
-                                   size:Size(width:ball.ellipse.radiusX * 2, height:ball.ellipse.radiusY * 2))
-        let leftPaddleHitTest = leftPaddle.rectangle.rect.containment(target:ballBoundingBox).contains(.contact)
-        let rightPaddleHitTest = rightPaddle.rectangle.rect.containment(target:ballBoundingBox).contains(.contact)
+        let leftPaddleHitTest = leftPaddle.rectangle.rect.containment(target:ball.hitBox).contains(.contact)
+        let rightPaddleHitTest = rightPaddle.rectangle.rect.containment(target:ball.hitBox).contains(.contact)
 
         if leftPaddleHitTest {
             ball.velocityX = Ball.speedX

@@ -13,7 +13,7 @@ class Scoreboard : RenderableEntity {
     let textLocation = Point(x:175, y:40)
     let color = Color(.white)
     let onChangeColor = Color(.magenta)
-    let playAnimation = false
+    let playAnimation = true
     
     // Constants
     var fillStyle : FillStyle
@@ -25,7 +25,8 @@ class Scoreboard : RenderableEntity {
         }
     }
     
-    // Animations are available through the ScenesAnimations library as an extension to the Scenes and Igis libraries
+    // Animations are available through the ScenesAnimations library
+    // as an extension to the Scenes and Igis libraries
     var onChangeAnimation : Animation?
     let animationEasing = EasingStyle.outSine
     let animationDuration = 1.0
@@ -75,12 +76,13 @@ class Scoreboard : RenderableEntity {
         }
 
         // first, add 1 to the scoreboard
+        // PLACE CODE BELOW:
         score += 1
 
         // then, play animation if specified
         if playAnimation {
             fillStyle = FillStyle(color:onChangeColor)
-            onChangeAnimation!.play()
+            onChangeAnimation?.play()
         }
 
         // then, check if player has won the game

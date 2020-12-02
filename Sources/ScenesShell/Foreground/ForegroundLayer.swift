@@ -32,4 +32,9 @@ class ForegroundLayer : Layer {
             rightScoreboard.addPoint()
         }
     }
+
+    // Displays the game over screen with the specified winner.
+    func showGameOverScreen(winner:Position) {
+        gameOver.showGameOverScreen(winner:winner)
+    }
 }
