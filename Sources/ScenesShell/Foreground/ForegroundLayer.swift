@@ -7,19 +7,24 @@ import Scenes
  */
 
 class ForegroundLayer : Layer {
+    // Create the necessary RenderableEntities for the ForegroundLayer
     let leftScoreboard = Scoreboard(position:.left)
     let rightScoreboard = Scoreboard(position:.right)
+    let gameOver = GameOver()
     
     init() {
         // Using a meaningful name can be helpful for debugging
         super.init(name:"Foreground")
         
         // We insert our RenderableEntities in the constructor
-        insert(entity:leftScoreboard, at:.front)
-        insert(entity:rightScoreboard, at:.front)
+        insert(entity:leftScoreboard, at:.back)
+        insert(entity:rightScoreboard, at:.back)
+        insert(entity:gameOver, at:.front)
     }
 
-    func addPoint(side:Position) {
+    // This function will be invoked by the scene to add points to
+    // the scoreboards.
+    func addPoint(to side:Position) {
         switch side {
         case .left:
             leftScoreboard.addPoint()

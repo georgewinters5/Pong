@@ -1,5 +1,6 @@
 import Igis
 import Scenes
+import ScenesAnimations
 
 /*
  This class is responsible for rendering the scoreboard.
@@ -7,46 +8,84 @@ import Scenes
 
 class Scoreboard : RenderableEntity {
     // Settings
-    static let textColor = Color(red:255, green:255, blue:255)
+    // Note: textLocation is relative to the canvas center y-axis
+    let font = "22pt Arial"
+    let textLocation = Point(x:175, y:40)
+    let color = Color(.white)
+    let onChangeColor = Color(.magenta)
+    let playAnimation = false
     
     // Constants
-    let textFillStyle = FillStyle(color:textColor)
+    var fillStyle : FillStyle
     let position : Position
     let text : Text
+    var score = 0 {
+        didSet {
+            text.text = String(score)
+        }
+    }
+    
+    // Animations are available through the ScenesAnimations library as an extension to the Scenes and Igis libraries
+    var onChangeAnimation : Animation?
+    let animationEasing = EasingStyle.outSine
+    let animationDuration = 1.0
     
     init(position:Position) {
+        fillStyle = FillStyle(color:color)
+        
         self.position = position
         
         text = Text(location:Point.zero, text:"0")
+        text.font = font
         text.alignment = .center
         text.baseline = .middle
-        text.font = "16pt Arial"
-        
+
         // Using a meaningful name can be helpful for debugging
         super.init(name:"Scoreboard")
     }
 
     override func setup(canvasSize:Size, canvas:Canvas) {
+        // Setup our Animation
+        onChangeAnimation = Tween(from:onChangeColor, to:color, duration:animationDuration, ease:animationEasing) { newColor in
+            self.fillStyle = FillStyle(color:newColor)
+        }
+
+        animationController.register(animation:onChangeAnimation!)
+        
+        // Set the text location based on specified position
         switch position {
         case .left:
-            text.location = Point(x:canvasSize.center.x - 200, y:50)
+            text.location = Point(x:canvasSize.center.x - textLocation.x, y:textLocation.y)
         case .right:
-            text.location = Point(x:canvasSize.center.x + 200, y:50)
+            text.location = Point(x:canvasSize.center.x + textLocation.x, y:textLocation.y)
         }
     }
 
     override func render(canvas:Canvas) {
-        canvas.render(textFillStyle)
+        // render the fillstyle modifier before the text object
+        canvas.render(fillStyle)
         canvas.render(text)
     }
 
+    // This function will be invoked when a point needs to be added to
+    // this scoreboard.
     func addPoint() {
-        text.text = String(Int(text.text)! + 1)
+        guard let mainScene = scene as? MainScene else {
+            fatalError("Expected MainScene as scene to Scoreboard.")
+        }
 
-        if Int(text.text)! == 9 {
-            if let scene = scene as? MainScene {
-                scene.gameOver(winner:position)
-            }
+        // first, add 1 to the scoreboard
+        score += 1
+
+        // then, play animation if specified
+        if playAnimation {
+            fillStyle = FillStyle(color:onChangeColor)
+            onChangeAnimation!.play()
+        }
+
+        // then, check if player has won the game
+        if score >= mainScene.winningScore {
+            mainScene.gameOver(winner:position)
         }
     }
 }

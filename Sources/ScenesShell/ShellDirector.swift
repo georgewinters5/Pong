@@ -12,6 +12,11 @@ class ShellDirector : Director {
         enqueueScene(scene:MainScene())
     }
 
+    /*
+     This specifies the framerate to be used when rendering.  Generally,
+     anything above 30 will begin to lag (Since Igis uses server-side rendering,
+     the frame rate is typically independent of the clients graphics).
+     */
     override func framesPerSecond() -> Int {
         return 20
     }

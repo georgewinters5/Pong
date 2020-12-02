@@ -51,7 +51,7 @@ class Ball :  RenderableEntity {
                     let position = (result == .overlapsLeft)
                       ? Position.right
                       : Position.left
-                    scene.addPoint(side:position)
+                    scene.addPoint(to:position)
                 }
             default:
                 break
