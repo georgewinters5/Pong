@@ -33,4 +33,12 @@ class InteractionLayer : Layer {
             ball.velocityX = -Ball.speedX
         }
     }
+
+    func gameOver() {
+        ball.freeze()
+    }
+
+    func gameContinue() {
+        ball.unfreeze()
+    }
 }

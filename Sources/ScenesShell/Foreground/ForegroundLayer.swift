@@ -37,4 +37,9 @@ class ForegroundLayer : Layer {
     func showGameOverScreen(winner:Position) {
         gameOver.showGameOverScreen(winner:winner)
     }
+
+    func restartGame() {
+        leftScoreboard.score = 0
+        rightScoreboard.score = 0
+    }
 }

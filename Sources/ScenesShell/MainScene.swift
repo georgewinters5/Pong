@@ -21,7 +21,7 @@ class MainScene : Scene {
     let backgroundLayer = BackgroundLayer()
     let interactionLayer = InteractionLayer()
     let foregroundLayer = ForegroundLayer()
-    
+
     init() {
         // Using a meaningful name can be helpful for debugging
         super.init(name:"Main")
@@ -44,5 +44,11 @@ class MainScene : Scene {
     // start a new game.
     func gameOver(winner:Position) {
         foregroundLayer.showGameOverScreen(winner: winner)
+        interactionLayer.gameOver()
+    }
+
+    func restartGame() {
+        interactionLayer.gameContinue()
+        foregroundLayer.restartGame()
     }
 }

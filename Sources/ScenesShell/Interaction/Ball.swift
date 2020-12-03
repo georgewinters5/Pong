@@ -18,13 +18,29 @@ class Ball :  RenderableEntity {
     let fillStyle : FillStyle
     let ellipse : Ellipse
     
-    var velocityX = 0
-    var velocityY = 0
+    var velocityX = 0 {
+        didSet {
+            if isFrozen && velocityX != 0 {
+                velocityX = 0
+            }
+        }
+    }
+    var velocityY = 0 {
+        didSet {
+            if isFrozen && velocityY != 0 {
+                velocityY = 0
+            }
+        }
+    }
+
+    var isFrozen = false
 
     // Animations are available through the ScenesAnimations library
     // as an extension to the Scenes and Igis libraries
     var resetAnimation : Animation?
     let resetDelay = 0.75
+
+    var canvasCenter = Point.zero
     
     init() {
         fillStyle = FillStyle(color:color)
@@ -50,8 +66,10 @@ class Ball :  RenderableEntity {
         }
         animationController.register(animation:resetAnimation!)
 
+        canvasCenter = canvasSize.center
+
         // start the game by reseting the ball
-        resetBall(canvasCenter:canvasSize.center)
+        resetBall()
     }
 
     override func calculate(canvasSize:Size) {
@@ -69,7 +87,7 @@ class Ball :  RenderableEntity {
             case .overlapsBottom:
                 velocityY = -Ball.speedY
             case .overlapsLeft, .overlapsRight:
-                resetBall(canvasCenter:canvasSize.center)
+                resetBall()
                 if let scene = scene as? MainScene {
                     let position = (result == .overlapsLeft)
                       ? Position.right
@@ -88,10 +106,20 @@ class Ball :  RenderableEntity {
         canvas.render(ellipse)
     }
 
-    func resetBall(canvasCenter:Point) {
+    func resetBall() {
         velocityX = 0
         velocityY = 0
         ellipse.center = canvasCenter
         resetAnimation!.play()
+    }
+
+    func freeze() {
+        isFrozen = true
+        resetBall()
+    }
+
+    func unfreeze() {
+        isFrozen = false
+        resetBall()
     }
 }
