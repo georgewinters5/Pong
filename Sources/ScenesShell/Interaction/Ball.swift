@@ -7,17 +7,22 @@ import ScenesAnimations
  */
 
 class Ball :  RenderableEntity {
-    // Settings
-    static let ballRadius = 20
-    static let speedX = 12
-    static let speedY = 8
+    // Mark: Ball Styling
+    let ballRadius = 20
+    let speedX = 12
+    let speedY = 8
 
-    let color = Color(red:255, green:255, blue:255)
-    
-    // Constants
-    let fillStyle : FillStyle
+    // Animations are available through the ScenesAnimations library
+    // as an extension to the Scenes and Igis libraries
+    let resetDelay = 0.75
+
+    // Mark: Ball Constants
+    let fillStyle = FillStyle(color:MainScene.ballColor)
     let ellipse : Ellipse
-    
+    var resetAnimation : Animation?
+    var canvasCenter = Point.zero
+
+    var isFrozen = false
     var velocityX = 0 {
         didSet {
             if isFrozen && velocityX != 0 {
@@ -32,37 +37,29 @@ class Ball :  RenderableEntity {
             }
         }
     }
-
-    var isFrozen = false
-
-    // Animations are available through the ScenesAnimations library
-    // as an extension to the Scenes and Igis libraries
-    var resetAnimation : Animation?
-    let resetDelay = 0.75
-
-    var canvasCenter = Point.zero
     
     init() {
-        fillStyle = FillStyle(color:color)
-        ellipse = Ellipse(center:Point.zero, radiusX:Ball.ballRadius, radiusY:Ball.ballRadius, fillMode:.fill)
+        ellipse = Ellipse(center:Point.zero, radiusX:ballRadius, radiusY:ballRadius, fillMode:.fill)
     }
-    
+
+    // This calculates a rectangle around the ball for use in
+    // hit testing.
     var hitBox : Rect {
         let topLeft = Point(x:ellipse.center.x - ellipse.radiusX, y:ellipse.center.y - ellipse.radiusY)
         let size = Size(width:ellipse.radiusX * 2, height:ellipse.radiusY * 2)
         return Rect(topLeft:topLeft, size:size)
     }
-    
+
+    // This function is invoked when setting up this RenderableEntity.
     override func setup(canvasSize:Size, canvas:Canvas) {
-        // setup the reset animation (adds delay before continuing
-        // ball motion)
-        resetAnimation = Tween(from:0, to:0, delay:0.75, duration:0.01) { result in
+        // Define our animation
+        resetAnimation = Tween(from:0, to:0, delay:resetDelay, duration:0.01) { result in
             self.velocityX = Bool.random()
-              ? Ball.speedX
-              : -Ball.speedX
+              ? self.speedX
+              : -self.speedX
             self.velocityY = Bool.random()
-              ? Ball.speedY
-              : -Ball.speedY
+              ? self.speedY
+              : -self.speedY
         }
         animationController.register(animation:resetAnimation!)
 
@@ -72,20 +69,22 @@ class Ball :  RenderableEntity {
         resetBall()
     }
 
+    // This function is invoked before rendering this object for
+    // any motion calculations.
     override func calculate(canvasSize:Size) {
+        // move the ball by its current velocity
         ellipse.center += Point(x:velocityX, y:velocityY)
 
-        // check if the ball makes contact with the edge of the
-        // canvas, and handle accordingly.
+        // check if the hitBox hits the canvas border and handle accordingly.
         let canvasBoundingRect = Rect(size:canvasSize)
         let hitResults = canvasBoundingRect.containment(target:hitBox)
 
         for result in hitResults {
             switch result {
             case .overlapsTop:
-                velocityY = Ball.speedY
+                velocityY = speedY
             case .overlapsBottom:
-                velocityY = -Ball.speedY
+                velocityY = -speedY
             case .overlapsLeft, .overlapsRight:
                 resetBall()
                 if let scene = scene as? MainScene {
@@ -100,12 +99,16 @@ class Ball :  RenderableEntity {
         }
     }
 
+    // This function is responsible for rendering out objects onto
+    // the provided canvas.
     override func render(canvas:Canvas) {
         // render the fillstyle modifier before the ellipse object
         canvas.render(fillStyle)
         canvas.render(ellipse)
     }
 
+    // This function is invoked after a point is scored to reset the
+    // ball for the next round.
     func resetBall() {
         velocityX = 0
         velocityY = 0
@@ -113,11 +116,13 @@ class Ball :  RenderableEntity {
         resetAnimation!.play()
     }
 
+    // Whenever the game ends, we want to stop the balls motion.
     func freeze() {
         isFrozen = true
         resetBall()
     }
 
+    // Whenever the game restarts, we want to reset the balls motion.
     func unfreeze() {
         isFrozen = false
         resetBall()

@@ -13,9 +13,9 @@ class ShellDirector : Director {
     }
 
     /*
-     This specifies the framerate to be used when rendering.  Generally,
-     anything above 30 will begin to lag (Since Igis uses server-side rendering,
-     the frame rate is typically independent of the clients graphics).
+     This function returns the framerate to be used for rendering.
+     Generally, a framerate over 30 will lag (Since Igis uses server-side
+     rendering, the framerate is independent of the clients machine).
      */
     override func framesPerSecond() -> Int {
         return 20

@@ -7,37 +7,33 @@ import ScenesAnimations
  */
 
 class Scoreboard : RenderableEntity {
-    // Settings
-    // Note: textLocation is relative to the canvas center y-axis
-    let font = "22pt Arial"
-    let textLocation = Point(x:175, y:40)
-    let color = Color(.white)
-    let onChangeColor = Color(.magenta)
-    let playAnimation = true
+    // Mark: Scoreboard Styling
+    let playAnimation = true    
+    let relativeTextLocation = Point(x:175, y:40)
     
-    // Constants
-    var fillStyle : FillStyle
+    // Animations are available through the ScenesAnimations library
+    // as an extension to the Scenes and Igis libraries
+    let animationColor = Color(.magenta)
+    let animationEasing = EasingStyle.outSine
+    let animationDuration = 1.0
+
+    // Mark: Scoreboard Constants
     let position : Position
     let text : Text
+    var onScoreAnimation : Animation?
+    
+    var fillStyle = FillStyle(color:MainScene.textColor)
     var score = 0 {
         didSet {
             text.text = String(score)
         }
     }
     
-    // Animations are available through the ScenesAnimations library
-    // as an extension to the Scenes and Igis libraries
-    var onChangeAnimation : Animation?
-    let animationEasing = EasingStyle.outSine
-    let animationDuration = 1.0
-    
     init(position:Position) {
-        fillStyle = FillStyle(color:color)
-        
         self.position = position
         
-        text = Text(location:Point.zero, text:"0")
-        text.font = font
+        text = Text(location:Point.zero, text:String(score))
+        text.font = MainScene.textFont
         text.alignment = .center
         text.baseline = .middle
 
@@ -45,49 +41,54 @@ class Scoreboard : RenderableEntity {
         super.init(name:"Scoreboard")
     }
 
+    // This function is invoked when setting up this RenderableEntity.
     override func setup(canvasSize:Size, canvas:Canvas) {
-        // Setup our Animation
-        onChangeAnimation = Tween(from:onChangeColor, to:color, duration:animationDuration, ease:animationEasing) { newColor in
+        // Define our animation
+        onScoreAnimation = Tween(from:animationColor, to:MainScene.textColor, duration:animationDuration, ease:animationEasing) { newColor in
             self.fillStyle = FillStyle(color:newColor)
         }
-
-        animationController.register(animation:onChangeAnimation!)
+        animationController.register(animation:onScoreAnimation!)
         
-        // Set the text location based on specified position
+        // Set the text location based on relative position
         switch position {
         case .left:
-            text.location = Point(x:canvasSize.center.x - textLocation.x, y:textLocation.y)
+            text.location = Point(x:canvasSize.center.x - relativeTextLocation.x, y:relativeTextLocation.y)
         case .right:
-            text.location = Point(x:canvasSize.center.x + textLocation.x, y:textLocation.y)
+            text.location = Point(x:canvasSize.center.x + relativeTextLocation.x, y:relativeTextLocation.y)
         }
     }
 
+    // This function is responsible for rendering our objects onto
+    // the provided canvas.
     override func render(canvas:Canvas) {
         // render the fillstyle modifier before the text object
         canvas.render(fillStyle)
         canvas.render(text)
     }
 
-    // This function will be invoked when a point needs to be added to
-    // this scoreboard.
+    // This function is invoked when a player scores a point.
     func addPoint() {
         guard let mainScene = scene as? MainScene else {
-            fatalError("Expected MainScene as scene to Scoreboard.")
+            fatalError("Scoreboard expected MainScene as its owning Scene.")
         }
-
+        
         // first, add 1 to the scoreboard
-        // PLACE CODE BELOW:
         score += 1
 
         // then, play animation if specified
         if playAnimation {
-            fillStyle = FillStyle(color:onChangeColor)
-            onChangeAnimation?.play()
+            fillStyle = FillStyle(color:animationColor)
+            onScoreAnimation?.play()
         }
 
         // then, check if player has won the game
-        if score >= mainScene.winningScore {
+        if score >= MainScene.winningScore {
             mainScene.gameOver(winner:position)
         }
+    }
+
+    // This function is invoked when the game restarts.
+    func reset() {
+        score = 0
     }
 }

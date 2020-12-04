@@ -7,10 +7,15 @@ import Scenes
  */
 
 class ForegroundLayer : Layer {
-    // Create the necessary RenderableEntities for the ForegroundLayer
+    /*
+     Layers typically include one or more RenderableEntities.
+     Commonly, the foreground contains text, such as scoreboards,
+     and other informational entities such as healthbars and game
+     over panels.
+     */
     let leftScoreboard = Scoreboard(position:.left)
     let rightScoreboard = Scoreboard(position:.right)
-    let gameOver = GameOver()
+    let gameOverPanel = GameOverPanel()
     
     init() {
         // Using a meaningful name can be helpful for debugging
@@ -19,12 +24,12 @@ class ForegroundLayer : Layer {
         // We insert our RenderableEntities in the constructor
         insert(entity:leftScoreboard, at:.back)
         insert(entity:rightScoreboard, at:.back)
-        insert(entity:gameOver, at:.front)
+        insert(entity:gameOverPanel, at:.front)
     }
 
-    // This function will be invoked by the scene to add points to
-    // the scoreboards.
+    // This function is invoked when a player scores a point.
     func addPoint(to side:Position) {
+        // determine which scoreboard to add the point to.
         switch side {
         case .left:
             leftScoreboard.addPoint()
@@ -33,13 +38,14 @@ class ForegroundLayer : Layer {
         }
     }
 
-    // Displays the game over screen with the specified winner.
-    func showGameOverScreen(winner:Position) {
-        gameOver.showGameOverScreen(winner:winner)
+    // This function is invoked when the game ends.
+    func gameOver(winner:Position) {
+        gameOverPanel.gameOver(winner:winner)
     }
 
+    // This function is invoked when the game restarts.
     func restartGame() {
-        leftScoreboard.score = 0
-        rightScoreboard.score = 0
+        leftScoreboard.reset()
+        rightScoreboard.reset()
     }
 }
