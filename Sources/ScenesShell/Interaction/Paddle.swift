@@ -7,11 +7,12 @@ import Scenes
 
 class Paddle : RenderableEntity, KeyDownHandler {
     // Settings
-    let paddleMoveSpeed = 8
     let leftPaddleUpKey = "w"
     let leftPaddleDownKey = "s"
     let rightPaddleUpKey = "ArrowUp"
     let rightPaddleDownKey = "ArrowDown"
+
+    let paddleMoveSpeed = 8
     let leftPaddleColor = Color(red:255, green:50, blue:50)
     let rightPaddleColor = Color(red:50, green:50, blue:255)
     
