@@ -11,8 +11,8 @@ class Ball :  RenderableEntity {
     
     init() {
         // Initialize objects
-        velocityX = 0
-        velocityY = 0
+        velocityX = 15
+        velocityY = 10
         
         // Using a meaningful name can be helpful for debugging
         super.init(name:"Ball")
