@@ -6,36 +6,36 @@ import Scenes
  */
 
 class Net : RenderableEntity {
-    // Mark: Net Styling
-    let dashSize = Size(width:6, height:24)
-    let dashSpacing = 15
-
-    // Mark: Net Constants
-    let fillStyle = FillStyle(color:MainScene.netColor)
-    var rectangles = [Rectangle]()
+    let fillStyle : FillStyle
+    var rectangles : [Rectangle]
     
     init() {
+        // Initialize Objects
+        fillStyle = FillStyle(color:Color(.gray))
+        rectangles = []
+        
         // Using a meaningful name can be helpful for debugging
         super.init(name:"Net")
     }
 
-    // This function is invoked when setting up this RenderableEntity.
     override func setup(canvasSize:Size, canvas:Canvas) {
-        // Define some constants necessary for creating the dashed line
-        let centerX = canvasSize.center.x - (dashSize.width / 2)
+        // Define the size and spacing for our dashed line
+        let dashSize = Size(width:6, height:24)
+        let dashSpacing = 15
+        
+        // Define some constants to help create the dashed line
+        let topLeftX = canvasSize.center.x - (dashSize.width / 2)
         let dashSegmentLength = dashSize.height + dashSpacing
         let dashCount = (canvasSize.height / dashSegmentLength) + 1
 
-        // Creates number of dashes specified by dashCount
+        // Create the dashed line (a series of rectangles)
         for dashNumber in 0..<dashCount {
-            let topLeft = Point(x:centerX, y:dashSegmentLength * dashNumber)
+            let topLeft = Point(x:topLeftX, y:dashSegmentLength * dashNumber)
             let rect = Rect(topLeft:topLeft, size:dashSize)
             rectangles.append(Rectangle(rect:rect, fillMode:.fill))
         }
     }
 
-    // This function is responsible for rendering our objects onto
-    // the provided canvas.
     override func render(canvas:Canvas) {
         // render the fillstyle modifier before the rectangle objects
         canvas.render(fillStyle)

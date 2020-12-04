@@ -6,69 +6,68 @@ import Scenes
  */
 
 class Paddle : RenderableEntity, KeyDownHandler {
-    // Mark: Paddle Styling
-    let paddleSize = Size(width:16, height:120)
-    let paddleOffset = 24
-
+    // Settings
+    let paddleMoveSpeed = 8
     let leftPaddleUpKey = "w"
     let leftPaddleDownKey = "s"
     let rightPaddleUpKey = "ArrowUp"
     let rightPaddleDownKey = "ArrowDown"
+    let leftPaddleColor = Color(red:255, green:50, blue:50)
+    let rightPaddleColor = Color(red:50, green:50, blue:255)
     
-    // Mark: Paddle Constants
     let position : Position
     let upKey : String
     let downKey : String
-
     let fillStyle : FillStyle
-    let rectangle = Rectangle(rect:Rect.zero, fillMode:.fill)
+    let rectangle : Rectangle
     var canvasBottom = 0
 
     init(position:Position) {
         self.position = position
+        rectangle = Rectangle(rect:Rect(size:Size(width:16, height:120)), fillMode:.fill)
 
         // depending on the position, set necessary paddle properties
         switch position {
         case .left:
             upKey = leftPaddleUpKey
             downKey = leftPaddleDownKey
-            fillStyle = FillStyle(color:MainScene.leftSideColor)
+            fillStyle = FillStyle(color:leftPaddleColor)
         case .right:
             upKey = rightPaddleUpKey
             downKey = rightPaddleDownKey
-            fillStyle = FillStyle(color:MainScene.rightSideColor)
+            fillStyle = FillStyle(color:rightPaddleColor)
         }
     }
 
-    // This function is invoked when setting up this RenderableEntity.
     override func setup(canvasSize:Size, canvas:Canvas) {
-        // calculate the paddle position based on relative position
-        var topLeft = Point.zero
+        var topLeft = Point(x:0, y:canvasSize.center.y - rectangle.rect.height/2)
+        let paddleOffset = 24
         
         switch position {
         case .left:
             topLeft.x = paddleOffset
         case .right:
-            topLeft.x = canvasSize.width - paddleOffset - paddleSize.width
+            topLeft.x = canvasSize.width - paddleOffset - rectangle.rect.width
         }
-
-        // set the paddle size and position
-        rectangle.rect = Rect(topLeft:topLeft, size:paddleSize)
+        rectangle.rect.topLeft = topLeft
         
         canvasBottom = canvasSize.height
         dispatcher.registerKeyDownHandler(handler:self)
     }
 
-    // This function is responsible for rendering our objects onto
-    // the provided canvas.
-    override func render(canvas:Canvas) {
-        // render the fillstyle modifier before the rectangle object
-        canvas.render(fillStyle)
-        canvas.render(rectangle)
+    override func teardown() {
+        dispatcher.unregisterKeyDownHandler(handler:self)
     }
 
-    // This function is invoked whenever the paddle needs to be
-    // up or down.
+    override func boundingRect() -> Rect {
+        return rectangle.rect
+    }
+
+    override func render(canvas:Canvas) {
+        // render the fillstyle modifier before the rectangle object
+        canvas.render(fillStyle, rectangle)
+    }
+
     func move(by:Int) {
         rectangle.rect.topLeft.y += by
 
@@ -80,18 +79,12 @@ class Paddle : RenderableEntity, KeyDownHandler {
         }
     }
 
-    // This function is invoked whenever keyboard input is detected.
     func onKeyDown(key:String, code:String, ctrlKey:Bool, shiftKey:Bool, altKey:Bool, metaKey:Bool) {
         // check if key pressed cooresponds to specified movement keys.
         if key == upKey {
-            move(by:-MainScene.paddleMoveSpeed)
+            move(by:-paddleMoveSpeed)
         } else if key == downKey {
-            move(by:MainScene.paddleMoveSpeed)
+            move(by:paddleMoveSpeed)
         }
-    }
-
-    // This function is invoked when deleting this RenderableEntity.
-    override func teardown() {
-        dispatcher.unregisterKeyDownHandler(handler:self)
     }
 }

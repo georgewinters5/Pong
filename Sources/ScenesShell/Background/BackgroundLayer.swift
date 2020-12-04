@@ -7,9 +7,6 @@ import Scenes
  */
 
 class BackgroundLayer : Layer {
-    /*
-     Layers typically include one or more RenderableEntities
-     */
     let background = Background()
     let net = Net()
 

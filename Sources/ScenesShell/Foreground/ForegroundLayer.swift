@@ -7,15 +7,11 @@ import Scenes
  */
 
 class ForegroundLayer : Layer {
-    /*
-     Layers typically include one or more RenderableEntities.
-     Commonly, the foreground contains text, such as scoreboards,
-     and other informational entities such as healthbars and game
-     over panels.
-     */
     let leftScoreboard = Scoreboard(position:.left)
     let rightScoreboard = Scoreboard(position:.right)
     let gameOverPanel = GameOverPanel()
+    
+    var gameOver = false
     
     init() {
         // Using a meaningful name can be helpful for debugging
@@ -27,24 +23,25 @@ class ForegroundLayer : Layer {
         insert(entity:gameOverPanel, at:.front)
     }
 
-    // This function is invoked when a player scores a point.
     func addPoint(to side:Position) {
-        // determine which scoreboard to add the point to.
-        switch side {
-        case .left:
-            leftScoreboard.addPoint()
-        case .right:
-            rightScoreboard.addPoint()
+        if !gameOver {
+            // determine which scoreboard to add the point to.
+            switch side {
+            case .left:
+                leftScoreboard.addPoint()
+            case .right:
+                rightScoreboard.addPoint()
+            }
         }
     }
 
-    // This function is invoked when the game ends.
     func gameOver(winner:Position) {
+        gameOver = true
         gameOverPanel.gameOver(winner:winner)
     }
 
-    // This function is invoked when the game restarts.
     func restartGame() {
+        gameOver = false
         leftScoreboard.reset()
         rightScoreboard.reset()
     }

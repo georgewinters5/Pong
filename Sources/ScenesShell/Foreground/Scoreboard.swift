@@ -7,22 +7,17 @@ import ScenesAnimations
  */
 
 class Scoreboard : RenderableEntity {
-    // Mark: Scoreboard Styling
     let playAnimation = true    
     let relativeTextLocation = Point(x:175, y:40)
-    
-    // Animations are available through the ScenesAnimations library
-    // as an extension to the Scenes and Igis libraries
+    let defaultColor = Color(.white)
     let animationColor = Color(.magenta)
     let animationEasing = EasingStyle.outSine
     let animationDuration = 1.0
 
-    // Mark: Scoreboard Constants
     let position : Position
     let text : Text
+    var fillStyle : FillStyle
     var onScoreAnimation : Animation?
-    
-    var fillStyle = FillStyle(color:MainScene.textColor)
     var score = 0 {
         didSet {
             text.text = String(score)
@@ -31,9 +26,10 @@ class Scoreboard : RenderableEntity {
     
     init(position:Position) {
         self.position = position
-        
+
+        fillStyle = FillStyle(color:defaultColor)
         text = Text(location:Point.zero, text:String(score))
-        text.font = MainScene.textFont
+        text.font = "20pt Arial"
         text.alignment = .center
         text.baseline = .middle
 
@@ -41,10 +37,9 @@ class Scoreboard : RenderableEntity {
         super.init(name:"Scoreboard")
     }
 
-    // This function is invoked when setting up this RenderableEntity.
     override func setup(canvasSize:Size, canvas:Canvas) {
         // Define our animation
-        onScoreAnimation = Tween(from:animationColor, to:MainScene.textColor, duration:animationDuration, ease:animationEasing) { newColor in
+        onScoreAnimation = Tween(from:animationColor, to:defaultColor, duration:animationDuration, ease:animationEasing) { newColor in
             self.fillStyle = FillStyle(color:newColor)
         }
         animationController.register(animation:onScoreAnimation!)
@@ -58,17 +53,13 @@ class Scoreboard : RenderableEntity {
         }
     }
 
-    // This function is responsible for rendering our objects onto
-    // the provided canvas.
     override func render(canvas:Canvas) {
         // render the fillstyle modifier before the text object
-        canvas.render(fillStyle)
-        canvas.render(text)
+        canvas.render(fillStyle, text)
     }
 
-    // This function is invoked when a player scores a point.
     func addPoint() {
-        guard let mainScene = scene as? MainScene else {
+        guard let foreground = layer as? ForegroundLayer else {
             fatalError("Scoreboard expected MainScene as its owning Scene.")
         }
         
@@ -83,11 +74,10 @@ class Scoreboard : RenderableEntity {
 
         // then, check if player has won the game
         if score >= MainScene.winningScore {
-            mainScene.gameOver(winner:position)
+            foreground.gameOver(winner:position)
         }
     }
 
-    // This function is invoked when the game restarts.
     func reset() {
         score = 0
     }
