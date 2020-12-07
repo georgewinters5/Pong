@@ -22,11 +22,11 @@ extension ContainmentSet {
         return contains(.overlapsRight)
     }
 
-    var tooFarUp : Bool {
+    var tooFarTop : Bool {
         return contains(.overlapsTop)
     }
 
-    var tooFarDown : Bool {
+    var tooFarBottom : Bool {
         return contains(.overlapsBottom)
     }
 }
