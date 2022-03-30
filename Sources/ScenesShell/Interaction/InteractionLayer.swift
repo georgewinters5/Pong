@@ -11,7 +11,7 @@ class InteractionLayer : Layer {
     let leftPaddle = Paddle(position:.left)
     let rightPaddle = Paddle(position:.right)
 
-    var enableHitTesting = false
+    var enableHitTesting = true
 
     init() {
         // Using a meaningful name can be helpful for debugging
@@ -19,7 +19,10 @@ class InteractionLayer : Layer {
         
         // We insert our RenderableEntities in the constructor
         insert(entity:ball, at:.front)
+        insert(entity:leftPaddle, at:.front)
+        insert(entity:rightPaddle, at:.front)
     }
+    
 
     override func postCalculate(canvas:Canvas) {
         if enableHitTesting {

@@ -12,7 +12,7 @@ class Paddle : RenderableEntity, KeyDownHandler {
     let rightPaddleUpKey = "ArrowUp"
     let rightPaddleDownKey = "ArrowDown"
 
-    let paddleMoveSpeed = 8
+    let paddleMoveSpeed = 70
     let leftPaddleColor = Color(red:255, green:50, blue:50)
     let rightPaddleColor = Color(red:50, green:50, blue:255)
     
@@ -25,7 +25,7 @@ class Paddle : RenderableEntity, KeyDownHandler {
 
     init(position:Position) {
         self.position = position
-        rectangle = Rectangle(rect:Rect(size:Size(width:16, height:120)), fillMode:.fill)
+        rectangle = Rectangle(rect:Rect(size:Size(width:16, height:160)), fillMode:.fill)
 
         // depending on the position, set necessary paddle properties
         switch position {
