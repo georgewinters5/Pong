@@ -66,7 +66,7 @@ class Ball :  RenderableEntity {
                 coordinatesSet = false
                 mainScene.addPoint(to:.right)
                 time = 0
-            } else if hitTest.tooFarRight {
+             } else if hitTest.tooFarRight {
                 coordinatesSet = false
                 mainScene.addPoint(to:.left)
                 time = 0
